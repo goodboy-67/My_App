@@ -7,42 +7,39 @@ client = OpenAI(
 
 )
 
-
-def talk_to_chatgpt(system_prompt):
+def get_standard_response(chat_history):
     """
-    Allows the user to have a conversation with the ChatGPT API.
-    ChatGPT will remember what the user says to it as long as this conversation is active.
-    When the function terminates, ChatGPT will forget everything the user said.
-    The user can end this conversation by typing and entering "STOP".
+    Sends a prompt to the ChatGPT API where it will return a standard response.
+    ChatGPT will not remember any prior conversations.
 
     Parameters:
     - system_prompt (str): Directions on how ChatGPT should act.
+    - user_prompt (str): A prompt from the user.
 
     Returns:
-    - (list(dict)): The chat history.
+    - (str): ChatGPT's response.
     """
-
-    chat_history = [
-        {"role": "system", "content": system_prompt},
-    ]
-
-    while True:
-        user_prompt = input("Enter a response, or type in \"STOP\" to end this conversation. ")
-        if user_prompt == "STOP":
-            return chat_history
+    response = client.chat.completions.create(
+        model="gpt-4o",
+        messages=chat_history
         
-        chat_history.append(
-            {"role": "user", "content": user_prompt},
-        )
-        response = client.chat.completions.create(
-            model="gpt-4o",
-            messages = chat_history
-        )
+    )
+    return response.choices[0].message.content
 
-        assistant_response = response.choices[0].message.content
-        print(assistant_response)
-        print()
+"""
+# Welcome to ChatGpt500 
+(the new and improved chatgpt)
+"""
 
-        chat_history.append(
-            {"role": "assistant", "content": assistant_response}
-        )
+user_input = st.text_input("This is the start of your legendary conversation with chatgpt500")
+
+system_prompt = 'You are a meanie chatgpt who is rude to people who ask silly questions.'
+
+chat = [
+    {'role':'system','content':system_prompt},
+    {'role':'user','content':user_input}
+]
+
+response = get_standard_response(chat)
+
+st.write(response)
