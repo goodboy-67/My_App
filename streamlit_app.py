@@ -37,7 +37,22 @@ system_prompt = 'You are a good chatgpt who is nice to people who ask questions.
 if 'convo' not in st.session_state:
     st.session_state['convo'] = {"role":'system',"content":system_prompt}
 
-user_input = st.text_input("This is the start of your legendary conversation with chatgpt500")
+for chat in st.session_state['convo']:
+    if chat['role'] == 'system':
+        continue
+    elif chat['role']=='user':
+        message(chat['content'],is_user=True)
+    else:
+        message(chat['content'])
+
+
+with st.form('input'):
+
+    user_input = st.text_input("This is the start of your legendary conversation with chatgpt500")
+    submitted = st.form_submit_button('Send Message')
+
+    if submitted and user_input != "":
+        st.session_state['convo'].append({'role':'user','content':user_input})
 
 
 chat = [
