@@ -1,5 +1,6 @@
 import streamlit as st
 from openai import OpenAI
+from st_chat_message import message
 
 client = OpenAI(
     api_key = st.secrets['key']
@@ -30,9 +31,14 @@ def get_standard_response(chat_history):
 (the new and improved chatgpt)
 """
 
+
+system_prompt = 'You are a good chatgpt who is nice to people who ask questions.'
+
+if 'convo' not in st.session_state:
+    st.session_state['convo'] = {"role":'system',"content":system_prompt}
+
 user_input = st.text_input("This is the start of your legendary conversation with chatgpt500")
 
-system_prompt = 'You are a meanie chatgpt who is rude to people who ask silly questions.'
 
 chat = [
     {'role':'system','content':system_prompt},
